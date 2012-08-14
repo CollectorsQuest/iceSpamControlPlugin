@@ -36,8 +36,8 @@ class iceSpamControlValidatorSchema extends sfValidatorSchema
     $this->addOption('credentials', iceSpamControl::CREDENTIALS_ALL);
     $this->addOption('throw_global_error', true);
 
-    $this->addMessage('invalid', 'The form failed iceSpamControl check');
-    $this->addMessage('invalid_field', 'This field failed iceSpamControl check');
+    $this->addMessage('spam', 'The form failed iceSpamControl check');
+    $this->addMessage('spam_field', 'This field failed iceSpamControl check');
   }
 
   public function doClean($values)
@@ -74,12 +74,12 @@ class iceSpamControlValidatorSchema extends sfValidatorSchema
       {
         if ($this->getOption('throw_global_error'))
         {
-          throw new sfValidatorError($this, 'invalid');
+          throw new sfValidatorError($this, 'spam');
         }
         else
         {
           $localErrorSchema->addError(
-            new sfValidatorError($this, 'invalid_field'),
+            new sfValidatorError($this, 'spam_field'),
             $form_field
           );
         }
