@@ -63,11 +63,13 @@ class PluginiceModelSpamControlQuery extends BaseiceModelSpamControlQuery
    * @param     string $credentials
    * @return    PluginiceModelSpamControlQuery
    */
-  public function filterByCredentials($credentials, $comparison = Criteria::IN)
+  public function filterByCredentials($credentials = null, $comparison = Criteria::IN)
   {
     // if we are given all credentials, do not filter by credentials at all
-    if (iceModelSpamControlPeer::CREDENTIALS_ALL == $credentials)
-    {
+    if (
+      null === $credentials ||
+      iceModelSpamControlPeer::CREDENTIALS_ALL == $credentials
+    ) {
       return $this;
     }
     // else filter with ALL added
