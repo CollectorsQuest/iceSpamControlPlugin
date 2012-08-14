@@ -1,9 +1,31 @@
 <?php
 
+/**
+ * IceSpamControl
+ */
 class IceSpamControl
 {
-  public static function isBanned($field, $value, $validate = false)
-  {
+  const CREDENTIALS_ALL     = iceModelSpamControlPeer::CREDENTIALS_ALL;
+  const CREDENTIALS_READ    = iceModelSpamControlPeer::CREDENTIALS_READ;
+  const CREDENTIALS_CREATE  = iceModelSpamControlPeer::CREDENTIALS_CREATE;
+  const CREDENTIALS_EDIT    = iceModelSpamControlPeer::CREDENTIALS_EDIT;
+  const CREDENTIALS_COMMENT = iceModelSpamControlPeer::CREDENTIALS_COMMENT;
+
+  /**
+   * Check if a given filed/value combination is banned
+   *
+   * @param     string $field
+   * @param     mixed $value
+   * @param     boolean $validate
+   *
+   * @return    boolean
+   */
+  public static function isBanned(
+    $field,
+    $value,
+    $validate = false,
+    $credentials = iceModelSpamControlPeer::CREDENTIALS_READ
+  ) {
     if (is_string($value))
     {
       $value = trim($value);
@@ -14,16 +36,96 @@ class IceSpamControl
       return false;
     }
 
+    if ($validate && !($values = self::validateField($field, $value)))
+    {
+      return true;
+    }
+    else
+    {
+      $values = array($value);
+    }
+
+    foreach ($values as $value)
+    {
+      $is_banned = (boolean) iceModelSpamControlQuery::create()
+        ->filterByField($field)
+        ->filterByValue($value)
+        ->filterByCredentials($credentials)
+        ->filterByIsBanned(true)
+        ->count();
+
+      if ($is_banned)
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Check if a given field/value combination is banned
+   *
+   * @param     string $field
+   * @param     mixed $value
+   * @param     string $credentials
+   *
+   * @return    boolean
+   */
+  public static function isThrottled(
+    $field,
+    $value,
+    $validate = false,
+    $credentials = iceModelSpamControlPeer::CREDENTIALS_READ
+  ) {
+    if (is_string($value))
+    {
+      $value = trim($value);
+    }
+
+    if (empty($value))
+    {
+      return false;
+    }
+
+    if ($validate && !self::validateField($field, $value))
+    {
+      return true;
+    }
+
+    foreach ($values as $value)
+    {
+      $is_throttled = (boolean) iceModelSpamControlQuery::create()
+        ->filterByField($field)
+        ->filterByValue($value)
+        ->filterByCredentials($credentials)
+        ->filterByIsThrottled(true)
+        ->count();
+
+      if ($is_throttled)
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  public static function validateField($field, $value)
+  {
     switch ($field)
     {
       case 'email':
-        if ($validate && !preg_match(sfValidatorEmail::REGEX_EMAIL, $value, $m))
+        if (!preg_match(sfValidatorEmail::REGEX_EMAIL, $value))
         {
-          return true;
+          return false;
         }
-
-        $values = array($value);
+        else
+        {
+          return array($value);
+        }
         break;
+
       case 'phone':
         $count = 0;
         $values = IceStatic::extractPhoneNumbers($value, false, $count);
@@ -33,37 +135,32 @@ class IceSpamControl
         $values = array_map($clean, $values);
         $values = array_filter($values);
 
-        if ($validate && $count == 0 && empty($values))
+        if ($count == 0 && empty($values))
         {
-          return true;
+          return false;
+        }
+        else
+        {
+          return $values;
         }
         break;
+
       case 'ip':
+        if (filter_var($value, FILTER_VALIDATE_IP))
+        {
+          return array($value);
+        }
+        else
+        {
+          return false;
+        }
+        break;
+
+      default:
+        return array($value);
         break;
     }
 
-    foreach ($values as $value)
-    {
-      $q = iceModelSpamControlQuery::create()
-         ->filterByField($field)
-         ->filterByValue($value);
-
-      if (($record = $q->findOne()) && $record->getIsBanned())
-      {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  public static function isThrottled($field, $value, $validate = false)
-  {
-    $q = iceModelSpamControlQuery::create()
-       ->filterByField($field)
-       ->filterByValue($value);
-
-    return ($record = $q->findOne()) && $record->getIsThrottled();
   }
 
 }

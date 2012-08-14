@@ -17,21 +17,39 @@ class ProjectConfiguration extends sfProjectConfiguration
     $this->setPlugins(array('iceSpamControlPlugin'));
     $this->setPluginPath('iceSpamControlPlugin', dirname(__FILE__).'/../../../..');
 
-    if (is_dir(dirname(__FILE__).'/../../../../../sfPropelORMPlugin'))
+    $this->loadExternalPlugin(array(
+        'sfPropelORMPlugin',
+        'iceLibsPlugin',
+    ));
+  }
+
+  protected function loadExternalPlugin($plugin)
+  {
+    if (is_array($plugin))
+    {
+      foreach ($plugin as $plugin_name)
+      {
+        $this->loadExternalPlugin($plugin_name);
+      }
+      return;
+    }
+
+    if (is_dir(dirname(__FILE__).'/../../../../../' . $plugin))
     {
       $this->setPluginPath(
-        'sfPropelORMPlugin',
-        dirname(__FILE__).'/../../../../../sfPropelORMPlugin'
+        $plugin,
+        dirname(__FILE__).'/../../../../../' . $plugin
       );
-      $this->enablePlugins('sfPropelORMPlugin');
+      $this->enablePlugins($plugin);
     }
     else
     {
-      throw new RuntimeException('You need to have sfPropelORMPlugin installed in your project to run the iceSpamControlPlugin');
+      throw new RuntimeException(sprintf(
+        'You need to have %s installed in your project to run the iceSpamControlPlugin',
+        $plugin
+      ));
     }
-
   }
-
 
   public function initializePropel($app)
   {

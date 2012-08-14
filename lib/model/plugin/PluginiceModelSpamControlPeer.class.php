@@ -20,7 +20,7 @@ class PluginiceModelSpamControlPeer extends BaseiceModelSpamControlPeer
     $type,
     $field,
     $value,
-    $credentials = 'read'
+    $credentials = iceModelSpamControlPeer::CREDENTIALS_READ
   ) {
     if (!in_array($type, array('ban', 'throttle')))
     {
@@ -75,8 +75,9 @@ class PluginiceModelSpamControlPeer extends BaseiceModelSpamControlPeer
    * @return    boolean
    * @throws    RuntimeException
    */
-  public static function addBan($field, $value, $credentials = 'read')
-  {
+  public static function addBan(
+    $field, $value, $credentials = iceModelSpamControlPeer::CREDENTIALS_READ
+  ) {
     return self::addBanOrThrottle('ban', $field, $value, $credentials);
   }
 
@@ -90,8 +91,9 @@ class PluginiceModelSpamControlPeer extends BaseiceModelSpamControlPeer
    * @return    boolean
    * @throws    RuntimeException
    */
-  public static function addThrottle($field, $value, $credentials = 'read')
-  {
+  public static function addThrottle(
+    $field, $value, $credentials = iceModelSpamControlPeer::CREDENTIALS_READ
+  ) {
     return self::addBanOrThrottle('throttle', $field, $value, $credentials);
   }
 

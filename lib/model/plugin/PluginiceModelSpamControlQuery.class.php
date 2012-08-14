@@ -54,4 +54,32 @@ class PluginiceModelSpamControlQuery extends BaseiceModelSpamControlQuery
                 ->filterByValue($v, $comparison);
   }
 
+  /**
+   * Filter by credentials; Will include the "all" credential in the search if
+   * searching for one of "read", "create", "edit", "comment"
+   *
+   * If searching for "all", will discard any filtering based on credentials
+   *
+   * @param     string $credentials
+   * @return    PluginiceModelSpamControlQuery
+   */
+  public function filterByCredentials($credentials, $comparison = Criteria::IN)
+  {
+    // if we are given all credentials, do not filter by credentials at all
+    if (iceModelSpamControlPeer::CREDENTIALS_ALL == $credentials)
+    {
+      return $this;
+    }
+    // else filter with ALL added
+    else
+    {
+      $credentials = array(
+          iceModelSpamControlPeer::CREDENTIALS_ALL,
+          $credentials
+      );
+
+      return parent::filterByCredentials($credentials, $comparison);
+    }
+  }
+
 }

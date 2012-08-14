@@ -4,8 +4,33 @@ iceModelSpamControl:
     value: blocked@mail.com
     credentials: read
     is_banned: true
+
+  spam_2:
+    field: email
+    value: blocked+comment@mail.com
+    credentials: comment
+    is_banned: true
+
   throttle_1:
     field: email
     value: throttled@mail.com
     credentials: read
     is_throttled: true
+
+  credential_1:
+    field: email
+    value: credentials
+    credentials: read
+    is_banned: true
+
+  credential_2:
+    field: email
+    value: credentials
+    credentials: comment
+    is_banned: true
+
+  credential_3:
+    field: email
+    value: credentials
+    credentials: all
+    is_banned: true
