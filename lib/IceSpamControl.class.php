@@ -24,7 +24,7 @@ class IceSpamControl
     $field,
     $value,
     $validate = false,
-    $credentials = iceModelSpamControlPeer::CREDENTIALS_READ
+    $credentials = self::CREDENTIALS_READ
   ) {
     if (is_string($value))
     {
@@ -36,13 +36,13 @@ class IceSpamControl
       return false;
     }
 
-    if ($validate && !($values = self::validateField($field, $value)))
+    if ($validate && false === ($values = self::validateField($field, $value)))
     {
       return true;
     }
     else
     {
-      $values = array($value);
+      $values = isset($values) ? $values : array($value);
     }
 
     foreach ($values as $value)
@@ -76,7 +76,7 @@ class IceSpamControl
     $field,
     $value,
     $validate = false,
-    $credentials = iceModelSpamControlPeer::CREDENTIALS_READ
+    $credentials = self::CREDENTIALS_READ
   ) {
     if (is_string($value))
     {
@@ -88,9 +88,13 @@ class IceSpamControl
       return false;
     }
 
-    if ($validate && !self::validateField($field, $value))
+    if ($validate && false === ($values = self::validateField($field, $value)))
     {
       return true;
+    }
+    else
+    {
+      $values = isset($values) ? $values : array($value);
     }
 
     foreach ($values as $value)
@@ -111,6 +115,84 @@ class IceSpamControl
     return false;
   }
 
+  /**
+   * Add a new spam ban
+   *
+   * @param     string $field
+   * @param     mixed $value
+   * @param     boolean $validate
+   * @param     string $credentials
+   *
+   * @return    boolean Was ban successfully added
+   */
+  public static function ban(
+    $field,
+    $value,
+    $validate = false,
+    $credentials = self::CREDENTIALS_READ
+  ) {
+    if ($validate && false === ($values = self::validateField($field, $value)))
+    {
+      return false;
+    }
+    else
+    {
+      $values = isset($values) ? $values : array($value);
+    }
+
+    $ret = true;
+    foreach ($values as $value)
+    {
+      $ret = $ret && iceModelSpamControlPeer::addBan($field, $value, $credentials);
+    }
+
+    return $ret;
+  }
+
+  /**
+   * Add a new spam throttle
+   *
+   * @param     string $field
+   * @param     mixed $value
+   * @param     boolean $validate
+   * @param     string $credentials
+   *
+   * @return    boolean Was throttle successfully added
+   */
+  public static function throttle(
+    $field,
+    $value,
+    $validate = false,
+    $credentials = self::CREDENTIALS_READ
+  ) {
+    if ($validate && false === ($values = self::validateField($field, $value)))
+    {
+      return false;
+    }
+    else
+    {
+      $values = isset($values) ? $values : array($value);
+    }
+
+    $ret = true;
+    foreach ($values as $value)
+    {
+      $ret = $ret && iceModelSpamControlPeer::addThrottle(
+        $field, $value, $credentials
+      );
+    }
+
+    return $ret;
+  }
+
+  /**
+   * Validate a field by IceSpamControl standards
+   *
+   * @param     string $field
+   * @param     mixed $value
+   *
+   * @return    mixed false if unsuccessful validation or array of validated values
+   */
   public static function validateField($field, $value)
   {
     switch ($field)
@@ -160,7 +242,6 @@ class IceSpamControl
         return array($value);
         break;
     }
-
   }
 
 }
