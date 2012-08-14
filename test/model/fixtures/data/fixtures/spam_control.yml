@@ -1,0 +1,11 @@
+iceModelSpamControl:
+  spam_1:
+    field: email
+    value: blocked@mail.com
+    credentials: read
+    is_banned: true
+  throttle_1:
+    field: email
+    value: throttled@mail.com
+    credentials: read
+    is_throttled: true

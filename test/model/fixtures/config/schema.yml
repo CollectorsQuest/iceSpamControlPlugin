@@ -1,0 +1,14 @@
+connection: archive
+noXsd: false
+defaultIdMethod: native
+package: lib.model
+
+classes:
+  Comment:
+    columns:
+      id:         ~
+      name:       { type: varchar(255) }
+      body:       { type: longvarchar }
+      ip_address: { type: varchar(15) }
+    propel_behaviors:
+      symfony:    { form: false, filter: false }

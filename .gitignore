@@ -11,3 +11,11 @@ om
 map
 base
 
+test/model/fixtures/data/sql
+test/model/fixtures/data/database.sqlite
+test/model/fixtures/plugins/iceSpamControlPlugin
+test/model/fixtures/lib/model
+test/model/fixtures/log
+test/model/fixtures/cache
+
+

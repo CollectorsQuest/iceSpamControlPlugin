@@ -43,7 +43,7 @@ class PluginiceModelSpamControlPeer extends BaseiceModelSpamControlPeer
       throw new RuntimeException(sprintf(
         'Unknown credential "%s", supported credentials are: %s',
         $credentials,
-        implode(', ', self::getValueSet($colnamesself::CREDENTIALS))
+        implode(', ', self::getValueSet(self::CREDENTIALS))
       ));
     }
 

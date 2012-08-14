@@ -65,4 +65,5 @@ class IceSpamControl
 
     return ($record = $q->findOne()) && $record->getIsThrottled();
   }
+
 }
