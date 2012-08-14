@@ -61,6 +61,8 @@ class PluginiceModelSpamControlQuery extends BaseiceModelSpamControlQuery
    * If searching for "all", will discard any filtering based on credentials
    *
    * @param     string $credentials
+   * @param     string $comparison
+   *
    * @return    PluginiceModelSpamControlQuery
    */
   public function filterByCredentials($credentials = null, $comparison = Criteria::IN)
