@@ -54,7 +54,7 @@ class iceSpamControlValidatorSchema extends sfValidatorSchema
 
     foreach ($this->getOption('fields') as $form_field => $spam_field)
     {
-      if (!isset($values[$form_field]))
+      if (!array_key_exists($form_field, $values))
       {
         throw new RuntimeException(sprintf(
           'iceSpamControlValidatorSchema: You tried to filter for field %s which did not exist in the values to filter',
