@@ -91,7 +91,7 @@ class iceSpamControlValidatorSchema extends sfValidatorSchema
       throw $localErrorSchema;
     }
 
-    return parent::doClean($values);
+    return $values;
   }
 
 }
