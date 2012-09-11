@@ -8,6 +8,17 @@ class iceSpamControlValidatorSchema extends sfValidatorSchema
 {
 
   /**
+   * Remove the $fields variable from the constructor
+   *
+   * @param type $options
+   * @param type $messages
+   */
+  public function __construct($options = array(), $messages = array())
+  {
+    parent::__construct(null, $options, $messages);
+  }
+
+  /**
    * Required options:
    *  - fields: You must specify an associative array of form fields that
    *            correspondent to spam control fields
