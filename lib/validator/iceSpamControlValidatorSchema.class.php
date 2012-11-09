@@ -33,6 +33,7 @@ class iceSpamControlValidatorSchema extends sfValidatorSchema
    *           that should be applied to the otehr credentials as well)
    *  - throw_global_error: Whether to throw a global error, or add errors on
    *                        separate fields
+   *  - force_skip_check:  boolean/callable - force spam check to be skipped
    *
    * @param     array $options
    * @param     array $messages
@@ -46,6 +47,7 @@ class iceSpamControlValidatorSchema extends sfValidatorSchema
     $this->addOption('validate', false);
     $this->addOption('credentials', iceSpamControl::CREDENTIALS_ALL);
     $this->addOption('throw_global_error', true);
+    $this->addOption('force_skip_check', false);
 
     $this->addMessage('spam', 'The form failed iceSpamControl check');
     $this->addMessage('spam_field', 'This field failed iceSpamControl check');
@@ -59,6 +61,15 @@ class iceSpamControlValidatorSchema extends sfValidatorSchema
       throw new RuntimeException(
         'iceSpamControlValidatorSchema: Check must be one of "banned" or "throttled"'
       );
+    }
+
+    // check for forcible skip spam check, eitehr directly or by callable
+    $skip_check = $this->getOption('force_skip_check');
+    if (true === $skip_check ||
+        (is_callable($skip_check) && true === call_user_func($skip_check, $values))
+    ) {
+      // we are forced to skip the check by the form, just return the values
+      return $values;
     }
 
     $localErrorSchema = new sfValidatorErrorSchema($this);
