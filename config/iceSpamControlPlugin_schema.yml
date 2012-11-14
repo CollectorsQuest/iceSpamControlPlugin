@@ -20,4 +20,3 @@ classes:
 
     propel_behaviors:
       timestampable:  ~
-      symfony:        { form: false, filter: false }

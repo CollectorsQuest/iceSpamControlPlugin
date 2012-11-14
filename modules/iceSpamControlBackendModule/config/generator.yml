@@ -1,0 +1,33 @@
+generator:
+  class: IcePropelGenerator
+  param:
+    model_class:           iceModelSpamControl
+    theme:                 bootstrap
+    non_verbose_templates: true
+    with_show:             false
+    singular:              SpamControl
+    plural:                SpamControls
+    route_prefix:          spam_control
+    with_propel_route:     1
+    actions_base_class:    cqBackendActions
+
+    config:
+      actions: ~
+      fields:
+        created_at: { label: "Added At" }
+        is_banned: { label: "Is Ban"}
+        is_throttled: { label: "Is Throttle" }
+      list:
+        title: Spam Control
+        display: [field, value, credentials, is_banned, is_throttled, created_at]
+        query_methods:
+          orderByCreatedAt: ['DESC']
+        object_actions:
+          _delete: ~
+        actions: { }
+        batch_actions: { }
+      filter:
+        display: [field, value, credentials, is_throttled, is_banned]
+      form:    ~
+      edit:    ~
+      new:     ~
